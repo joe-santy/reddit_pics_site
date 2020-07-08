@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+
+<!-- Site to display images from multiple subreddits -->
+
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <style media="screen">
+          * {
+            margin: 0px;
+          }
+          body {
+            background-color: lightgrey;
+            display: block;
+          }
+          #controls {
+            position: fixed;
+            width: 100vw;
+          }
+          #content {
+            display: block;
+          }
+          #content div {
+            display: block;
+            padding-left: 5%;
+            padding-right: 5%;
+          }
+          #content div h4 {
+            max-width: 80vw;
+          }
+          #content div img {
+            object-fit: contain;
+            max-width: 80vw;
+            max-height: 90vh;
+          }
+        </style>
+    </head>
+    <body>
+
+      <div id="controls">
+        <input type="text" id="red">
+        <button type="button" id="redBtn">Add Pics</button>
+      </div>
+
+      <div id="content"></div>
+
+      <!-- Scripts -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <script type="text/javascript">
+
+        // Holds all data retrieved
+        let data = [];
+
+        // Displays .jpg and .gif in a data array
+        function displayImages(d) {
+          for (let i in d){
+              if (d[i].data.url.substr(d[i].data.url.length-4).match(/.jpg/) || d[i].data.url.substr(d[i].data.url.length-4).match(/.gif/)) {
+                  // $('#content').append(`<h4>${d[i].data.title}</h4><div style="background-image:url('${d[i].data.url}');"></div>`);
+                  $('#content').append(`<div><br><br><h4>${d[i].data.title}</h4><img src="${d[i].data.url}"/></div>`);
+              }
+          }
+        }
+
+        // Called upon post, when a subreddit is searched
+        function subRedCb(d) {
+          let dArray = d.data.children;
+          for (let i in dArray) {
+            data.push(dArray[i]);
+          }
+          displayImages(dArray);
+        }
+
+        // Calls functions upon user interaction
+        $(document).ready(function(){
+
+          // Sends input to server, inputs data returned to callback function
+          let getRedInfo = () => {
+            $.post('/',{subreddit: $('#red').val()}, subRedCb);
+          }
+
+          // Calls getRedInfo on pressing enter
+          $("#red").keyup(function(event) {
+            if (event.keyCode === 13) {
+                getRedInfo();
+            }
+          });
+
+          // Calls getRedInfo on pressing button
+          $("#redBtn").click(function(){
+            getRedInfo();
+          });
+        });
+      </script>
+    </body>
+</html>
