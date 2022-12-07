@@ -23,6 +23,6 @@
   "homepage": "https://github.com/joe-santy/reddit_pics_site#readme",
   "dependencies": {
     "axios": "^0.19.2",
-    "express": "^4.17.1"
+    "express": "^4.18.2"
   }
 }
